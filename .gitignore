@@ -1,6 +1,6 @@
 venv/
 main-old.py
 teste.py
-*.txt
+log*.txt
 .gitignore
 .env

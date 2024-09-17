@@ -4,6 +4,8 @@ from CTkMessagebox import CTkMessagebox
 from CTkToolTip import *
 from datetime import datetime 
 import threading
+import ctypes
+import sys
 import os 
 import subprocess as sub
 import pathlib
@@ -211,6 +213,19 @@ class AppMain(ctk.CTk):
             msg = CTkMessagebox(title="Warning",message=f"Nenhuma opção foi marcada.")     
             
             
-if __name__=='__main__':
-    app = AppMain()
-    app.mainloop()
+def is_admin():
+    """Verifica se o programa está sendo executado como administrador"""
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+if __name__ == '__main__':
+    if not is_admin():
+        # Se não for admin, solicita permissões elevadas e relança o script
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+        sys.exit()  # Sai do processo atual após tentar relançar como administrador
+    else:
+        # Somente executa a aplicação se já estiver como administrador
+        app = AppMain()
+        app.mainloop()
